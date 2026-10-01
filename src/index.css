@@ -23,8 +23,11 @@ html,
 body,
 #root {
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -32,7 +35,6 @@ body {
   font-family: 'Inter', sans-serif;
   background: #080d18;
   overflow-x: hidden;
-  overscroll-behavior: none;
 }
 
 button,
@@ -69,10 +71,7 @@ a:focus-visible {
 
 .genomia-page {
   width: 100%;
-  height: 100vh;
-  height: 100svh;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
   background: #080d18;
 }
 
@@ -80,7 +79,9 @@ a:focus-visible {
   position: relative;
   isolation: isolate;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   overflow: hidden;
   background: #080d18;
 }
@@ -150,6 +151,10 @@ a:focus-visible {
 
 .about-link {
   display: inline-block;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
   margin-top: 10px;
   color: rgba(255, 255, 255, 0.82);
   font-family: 'Inter', sans-serif;
@@ -197,6 +202,7 @@ a:focus-visible {
 }
 
 .title-line--subtitle {
+  margin-top: 2px;
   color: rgba(255, 255, 255, 0.9);
   font-family: 'Inter', sans-serif;
   font-size: clamp(1rem, 1.3vw, 1.1rem);
@@ -225,7 +231,7 @@ a:focus-visible {
   font-weight: 600;
   letter-spacing: 0.14em;
   line-height: 1;
-  padding: 0 27px;
+  padding: 0 30px;
   transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
   white-space: nowrap;
 }
@@ -241,6 +247,88 @@ a:focus-visible {
   margin-top: clamp(24px, 3vw, 38px);
   padding-inline: 35px;
   box-shadow: 0 0 28px rgba(233, 250, 248, 0.18), 0 12px 44px rgba(0, 0, 0, 0.2);
+}
+
+.about-dialog {
+  position: fixed;
+  inset: 0;
+  width: min(900px, calc(100% - 36px));
+  max-width: none;
+  max-height: min(82dvh, 760px);
+  margin: auto;
+  overflow: auto;
+  border: 1px solid rgba(201, 235, 232, 0.22);
+  border-radius: 20px;
+  padding: clamp(30px, 6vw, 64px);
+  background:
+    radial-gradient(ellipse at 12% 8%, rgba(63, 141, 151, 0.2), transparent 45%),
+    rgba(11, 20, 30, 0.96);
+  color: #f8f8f4;
+  box-shadow: 0 24px 100px rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(22px);
+}
+
+.about-dialog[open] {
+  animation: dialog-appear 180ms ease-out;
+}
+
+.about-dialog::backdrop {
+  background: rgba(2, 6, 14, 0.72);
+  backdrop-filter: blur(5px);
+}
+
+.about-content {
+  position: relative;
+  width: min(100%, 920px);
+}
+
+.about-close {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  cursor: pointer;
+  font: 300 1.8rem/1 'Inter', sans-serif;
+}
+
+@keyframes dialog-appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.about-eyebrow {
+  margin-bottom: 15px;
+  color: #8bc8c6;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+
+.about-title {
+  margin-bottom: clamp(28px, 4vw, 44px);
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.about-content p:not(.about-eyebrow) {
+  color: rgba(248, 248, 244, 0.84);
+  font-size: clamp(1rem, 1.45vw, 1.12rem);
+  font-weight: 300;
+  line-height: 1.85;
+}
+
+.about-content p + p {
+  margin-top: 1.4em;
 }
 
 .hero-horizon {
@@ -284,6 +372,18 @@ a:focus-visible {
 
   .hero-video {
     object-position: 48% center;
+  }
+
+.about-dialog {
+    width: calc(100% - 24px);
+    max-height: 88dvh;
+    border-radius: 16px;
+    padding: 34px 24px 28px;
+  }
+
+  .about-close {
+    top: -21px;
+    right: -12px;
   }
 
   .hero-content {
