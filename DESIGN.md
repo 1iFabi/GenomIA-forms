@@ -1,84 +1,202 @@
-# Serene — Luxury Beauty & Wellness Landing Page
+# Current React Hero UI Design System
 
-This document is the design source of truth for the two-section Serene landing page. It preserves the supplied visual, content, interaction, responsive, and motion requirements. The implementation is React + Vite + Tailwind CSS + TypeScript; do not add routes, sections, endpoints, dependencies, or destinations that are not specified here.
+## 1. Design principles
 
-## Brand and typography
+- Center the hero message over edge-to-edge animated media.
+- Keep navigation compact and collapse it to a menu on narrower screens.
+- Use a bright primary CTA and a translucent secondary CTA.
+- Scale the desktop composition with a reference unit; switch to fluid layout on small screens.
 
-- Brand: **Serene**, a luxury beauty and holistic wellness brand.
-- **Dancing Script** (weights 400, 500, 600, 700): the Serene wordmark.
-- **Instrument Serif** (regular and italic): hero headline and founder quote.
-- **Inter** (weights 300, 400, 500, 600, 700, 800, 900): body, navigation, and buttons.
-- Load the families from Google Fonts with preconnects to `https://fonts.googleapis.com` and `https://fonts.gstatic.com` (the latter with `crossorigin`), using exactly:
-  `https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&display=swap`
-- Set the document language to English. Page title: `Serene — Beauty & Wellness`. Description: `Expert beauty and holistic wellness, delivered with warmth and intention.`
+## 2. Typography
 
-## Page structure and navigation
+| Element | Current evidence |
+|---|---|
+| Typeface | Plus Jakarta Sans is declared in handwritten CSS; system sans-serif fallback. |
+| Hero H1 | 500 weight; `calc(89 * var(--u))`; line height `calc(90 * var(--u))`; letter spacing `calc(-1 * var(--u))`. Two block lines. |
+| Hero body | 300 weight; `calc(17.4 * var(--u))`; line height `calc(27 * var(--u))`; letter spacing `calc(-0.30 * var(--u))`. |
+| CTA | 500 weight; `calc(13.3 * var(--u))`; line-height/letter spacing are not comprehensively specified. |
+| Navigation | Menu links are 500 / 15px tablet and 500 / 15.5px mobile. Other navigation scale is not established here. |
+| H2–H6, caption, code | **Proposed:** the new section H2 uses `clamp(32px, 4vw, 52px)`, weight 500, line-height 1.08, and `-.04em` tracking; its paragraph uses 18px / 1.7 at weight 300. These are section-specific proposals, not an established global scale. |
 
-Render exactly two vertically scrollable, full-screen sections, in this order, inside an app wrapper with background `#0a0608`:
+On mobile, H1 uses `min(74px, calc((100vw - 44px) / 6.9))`, line-height `1.04`, letter-spacing `-.02em`; short landscape caps it at 44px. Body uses `clamp(15.5px, 4vw, 16.5px)` and 1.6 line-height, with separate short-landscape values.
 
-1. `<Hero />` — cinematic video-led introduction.
-2. `<QuoteSection />` — founder statement over a blue sky gradient.
+**Pending:** brand, audience, and product context are unresolved. Repository package/README identify “Genomia Forms”; the current document title says “Sellix — Cross-border finance,” while hero copy references genetics. Do not infer or normalize the brand from these conflicting signals.
 
-Do not lock page scrolling. There are no supplied service, journal, contact, booking, or other routes. Navigation and calls to action must use valid in-page anchors only; do not invent external destinations or extra page sections.
+## 3. Palette and contrast
 
-## Hero
+| Token / observed value | Use in current hero |
+|---|---|
+| `#ffffff` | Main hero text (`--ink`) and primary CTA hover. |
+| `#ededed` | Muted ink (`--ink-muted`). |
+| `#f6f6f6` | Subtitle. |
+| `#fdfdfd` | Primary CTA fill (`--white-btn`). |
+| `#050505` | Primary CTA text (`--btn-ink`). |
+| `rgba(10, 10, 12, .86)` | Current responsive menu panel surface. |
+| `rgba(0,0,0,.78)` | Secondary CTA glass fill. |
+| `rgba(255,255,255,.09)` | Secondary CTA border. |
+| `#a78bfa` | Current focus outline. |
+| `#000` | Page/video backing. |
 
-- Full viewport height (`h-screen`), positioned and clipped as a media composition.
-- Full-bleed, cover-cropped background video:
-  `https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260613_180732_a54afbf6-b30d-470e-861f-669871f09f67.mp4`
-  Autoplay, muted, loop, and `playsInline`. Place a full-section `bg-black/20` overlay above it. Keep it muted; the sound indicator is visual only and is not a sound control.
-- Fixed navbar at `top-0 left-0 right-0 z-50`, horizontal space-between, `px-6 md:px-12 py-5`.
-  - Left: white Serene wordmark in Dancing Script, `text-2xl md:text-3xl`.
-  - Desktop center: About, Services, Journal, Contact links in white/80, white on hover, `text-sm tracking-wide`, `gap-12`.
-  - Desktop right: white, rounded-pill **Book a consultation** CTA.
-  - Mobile: accessible hamburger with expanded state and three animated lines. On open, top line rotates 45° and moves down 9px; middle line fades and scales to zero; bottom line rotates -45° and moves up 9px. Use `cubic-bezier(0.22,1,0.36,1)`. The panel slides in from the right, is `w-[85%] max-w-[340px]`, and has `bg-[#0a0608]/95`, `backdrop-blur-xl`, and a translucent white left border. Escape closes it; keyboard focus, visible focus, and restoration/continuation of focus must remain sensible. Link entrances stagger opacity and horizontal translation, starting at 150ms with 75ms between links; the bottom CTA starts at 450ms. Reduced-motion preferences remove non-essential movement.
-  - Where the provided destination is not a real route, links must resolve to the available in-page sections/actions rather than fabricated URLs.
-- Center the hero content with an upward offset of `-120px`.
-  - Heading in white Instrument Serif: `Gentle touch. Radiant presence.`; `text-[36px] md:text-7xl lg:text-[110px]`, `leading-[0.9]`, tight tracking, centered, with the white text-glow.
-  - Exact subtitle: `Expert beauty and holistic wellness, delivered with warmth and intention.` White/70, `text-sm md:text-base`, centered, `mt-5 md:mt-7`, `max-w-xl`.
-  - White pill CTA: **Begin your renewal**, `mt-6 md:mt-9`.
-- Shared CTA appearance: white background, black text, `px-8 py-3.5`, fully rounded, medium weight, `text-sm tracking-wide`; hover to white/90; 300ms transition; apply button glow. CTA is an in-page link, not a booking/contact endpoint.
-- Desktop-only lower-left sound indicator at `bottom-8 left-8`: 40px circle, white/20 border, small horizontal bar, and two small white/60 text lines: `Experience` / `with sound`. It does not unmute or control the video.
+**Pending:** semantic success, warning, error, info, and general surface/text color roles are not evidenced; no values are assigned here.
 
-## Founder quote section
+WCAG 2.1 sRGB calculations for solid pairs: white/black 21.00:1; `#ededed`/black 17.94:1; `#f6f6f6`/black 19.43:1; `#050505`/`#fdfdfd` 20.04:1. The secondary CTA text `#d9d9d9` over its `rgba(0,0,0,.78)` fill composited over worst-case white is approximately 8.30:1. These do not certify text over the changing video. No video contrast has been measured; hero copy currently has no scrim, so contrast against every frame cannot be certified.
 
-- Full viewport height (`h-screen`), centered content, clipped decorative layers.
-- Exact top-to-bottom background gradient:
-  `#010A17 0% -> #0A4267 30% -> #20658E 60% -> #6BADC4 100%`.
-- Rainbow image:
-  `https://soft-zoom-63098134.figma.site/_assets/v11/8d520a7515d06cbfc403d0125e3d05b1a7ccd29c.png`
-  Absolute, inset-x-0, top-0, z-30, full width. Its vertical target moves from +120px to -160px according to section progress, using lerp factor 0.06.
-- Cloud image:
-  `https://soft-zoom-63098134.figma.site/_assets/v11/0d6dfd3f90b930f21726f2ed56a3320d79b7a797.png`
-  Both clouds are hidden below `sm`; start at zero opacity and offscreen. Horizontal entry/exit uses the 0.12–0.92 progress window, from -200px on the left / +200px on the right, with opacity derived from horizontal distance. Vertical drift is `progress * -50px`. Lerp cloud transform and opacity with factor 0.04. Left cloud: absolute left-0, bottom-[10%], z-10, `w-[500px] md:w-[650px]`, margin-left -50%. Right cloud: same image flipped horizontally, absolute right-0, bottom-[15%], z-10, same widths, margin-right -75%.
-- Put all animated layer transforms directly on those layers using `translate3d` and `will-change: transform`.
-- Center the quote content at z-20, max-width 4xl. Instrument Serif, white, `text-xl sm:text-2xl md:text-4xl lg:text-[42px]`, `leading-[1.45] md:leading-[1.5]`.
-- Exact founder quote: `Serene was founded on a belief in beauty that honors your nature. We pursue refined outcomes, considered approaches, and lasting vitality. We spend time learning what matters to you before deciding what serves you best. No rushing, no excess -- just support that lets you feel radiant.`
-- Attribution: `Dr. Mia Callahan -- Founder`, `mt-6 md:mt-8`, white/80, `text-sm md:text-base tracking-wide`.
+Known focus issue: current purple `#a78bfa` against `#fdfdfd` is 2.68:1, below the 3:1 UI contrast criterion. Against black it is 7.72:1. **Proposed correction, not current implementation:** use dual focus colors, black `#050505` on light (`#fdfdfd`, 20.04:1) and white `#ffffff` on dark (`#050505`, 20.38:1). **Proposed video mitigation, not current implementation:** a black scrim with opacity at least `.56` over a pure-white frame composites near `#707070`, yielding about 4.58:1 for `#f6f6f6`. Dynamic video still requires validation across actual frames.
 
-## Motion and accessibility
+## 4. Spacing and grid
 
-- Compute section progress exactly as `clamp(0, 1, (windowHeight - rect.top) / (windowHeight + rect.height))`.
-- Drive parallax with `requestAnimationFrame`; lerp using `current + (target - current) * factor`. Cancel frames and remove listeners on cleanup.
-- Honor `prefers-reduced-motion`: keep the page and decorative content legible, but do not run non-essential position/parallax motion. Keep visible focus indicators for all keyboard-operable links and controls.
-- The hamburger is a native button with an accessible name, `aria-expanded`, and a relationship to the menu. Escape closes the open menu; hidden menu links cannot be reached by keyboard.
-- Video is muted by default; do not add an invented sound toggle, booking endpoint, or contact endpoint.
+Desktop uses `--u: min(calc(100vw / 1280), calc(100dvh / 760))`; the authored reference is 1280×800, while unit height uses 760. Most desktop dimensions are multiples of `--u`. Hero content is centered with optical offsets `--dx: 8.5` and `--dy: 13.1` units. CTA gap is 7u; subtitle top margin 16.1u; CTA top margin 21.8u.
 
-## Global styling
+| Responsive range | Current behavior |
+|---|---|
+| Above 1160px | Proportional reference-unit layout; no reflow. |
+| At/below 1160px | Tablet unit formula adds minimum/clamped sizing; nav links/actions hide, burger appears; content and controls get minimum sizes. |
+| At/below 552px | `--u:1px`; 20px horizontal hero/nav padding; fluid headline and subtitle measure; subtitle breaks become natural wrapping. |
+| At/below 353px | CTAs stack vertically; button width capped at `min(100%,272px)`. |
+| At/below 552px and height at/below 460px | Short-landscape typography and spacing reductions. |
 
-Use Tailwind's base, components, and utilities directives. Baseline and utilities:
+The tablet `--u` override is `min(max(0.9px,min(100vw/1280,100dvh/760)),(100vw - 72px)/575,100dvh/620)`. Mobile intentionally sets `--u:1px`: the design stops scaling as a single desktop composition and uses fixed/minimum touch-friendly dimensions plus fluid text. A fallback uses `100vh` where `100dvh` is unavailable.
+
+**Proposed section layout:** the scroll section uses a 620px minimum desktop height, 96px vertical padding, and fluid 8vw side padding; columns use a flexible two-column grid with a fluid gap. At 700px and below it stacks, with 76px top / 88px bottom and 24px side padding. These are concrete proposals for this section, not existing global spacing tokens.
+
+## 5. Shape and elevation
+
+Primary and secondary hero CTAs are pill-shaped: desktop radius 19.5u; tablet at least 22px; mobile 23px. Mobile menu panel uses 20px radius, links 12px, and menu primary action 14px. Secondary CTA uses 2px backdrop blur and a subtle border. The responsive menu uses 22px backdrop blur and `0 24px 60px rgba(0,0,0,.55)` shadow. The background video fills/bleeds and is cropped with `object-fit:cover`, positioned at `51% 8%`.
+
+## 6. Buttons
+
+| Control | Current appearance and behavior |
+|---|---|
+| Hero primary | “Get Started”; near-white fill, near-black text, arrow SVG; hover fill becomes white. |
+| Hero secondary | “Contact Sales”; dark translucent fill, `#d9d9d9` text, subtle white border and blur; hover increases fill/border opacity. |
+| Navigation actions | Source includes disabled placeholder buttons; destinations are **pending**. |
+| Responsive menu action | “Get Started” styled as a light filled action. |
+
+Hero CTA dimensions: desktop 39u high, 19.5u radius, 13.3u text; tablet minimum 44px high / 15px text; mobile 46px high / 23px radius / 15px text. CTA destinations are **pending**; do not infer from labels. Current focus styling is a 2px `#a78bfa` outline offset 3px and pill radius; its contrast limitation is recorded above. Proposed dual focus tokens are normative recommendations, not implemented. No hover/focus state is evidence of a functional destination.
+
+## 7. Forms
+
+No forms or form controls are present in the current hero UI. Validation, labels, errors, and form-state colors are **pending**, not defined by this design system.
+
+## 8. Other present components
+
+- **Header/navigation:** logo, desktop nav links and actions, and a burger control. At 1160px and below, desktop links/actions are hidden and burger is shown.
+- **Menu:** responsive panel with links and a primary action; opens with a short entrance animation. Escape closes it and returns focus to the burger; outside click and link selection close it.
+- **Hero copy:** Spanish H1 “Lee la historia que está / escrita en ti” and subtitle “Sumérgete en tu información genética y descubre los secretos de tu biología en una sola plataforma.”
+- **Video background:** two layered video elements cross-fade at the loop boundary; decorative media is hidden from assistive technology in the source markup.
+- **What is GenomIA scroll section (proposed):** sibling section immediately below the full-screen hero; left-aligned heading “QUÉ ES GenomIA” and temporary Lorem ipsum description, plus a right-side CSS phone frame with an ordered list of three Spanish messages. The list remains semantic and present in reading order regardless of its visual reveal; it is not a modal.
+- Phone frame proposal: 300px wide, 440px minimum height, 8px white border, 38px radius, near-black interior, violet-accented message bubbles.
+- No table or alert component is evidenced.
+
+## 9. Iconography and images
+
+The hero uses inline SVG arrow icons; no icon package is evidenced. Exact media sources in current markup:
+
+- Video: `https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4`
+- Poster: `https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp`
+
+The source markup's current ARIA label describes a “Stylised globe of Earth rendered as a purple dot matrix against a starfield, slowly rotating.” This is label text, not an independently verified description of the visual video content. The actual video asset's visual content is unverified. Do not treat the label as a measured contrast guarantee.
+
+## 10. Motion
+
+Video layers transition opacity over `.9s` with linear timing for loop cross-fades. **Proposed section message reveal:** each message rises/fades in over `.55s`, with `.7s` additional delay between messages. Reduced-motion preference shows all messages immediately without animation. Button transitions are `.18s ease`; menu entrance is `.18s ease`. Entrance choreography runs once: headline lines 1.05s (delays .12s/.22s), logo .62s, navigation .55s with .045s stagger, subtitle .85s, and CTA elements .55–.70s; final secondary CTA starts at .97s and finishes at 1.67s. Mobile shortens headline to .92s and adjusts CTA delays. Reduced-motion preference suppresses entrance and disables transitions/animations; video script holds the first frame.
+
+## 11. Accessibility
+
+Source provides a main hero, semantic heading and paragraph, video elements marked `aria-hidden="true"`, a separately labelled section heading and ordered message list (no live region, so the list is not announced as an unsolicited update), a burger button with `aria-expanded` and changing `aria-label`, Escape dismissal with focus return, and `prefers-reduced-motion` handling. The menu closes on link selection and outside click. Verify keyboard order, menu relationship/expanded-state announcement, and visible focus in implementation review. Current purple focus indicator has a known contrast failure against the light CTA; see palette section. Solid-pair calculations do not establish contrast over dynamic video. No video contrast has been measured.
+
+## 12. Exportable CSS tokens and Tailwind equivalent
+
+Values below reproduce evidenced source values; proposed corrective values are clearly marked and are not current implementation. Unobserved semantic colors remain pending.
 
 ```css
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; background: #0a0a0c; overflow-x: hidden; }
-.font-inter { font-family: 'Inter', sans-serif; }
-.font-instrument { font-family: 'Instrument Serif', serif; }
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-.liquid-glass { background: rgba(255,255,255,.01); background-blend-mode: luminosity; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: none; box-shadow: inset 0 1px 1px rgba(255,255,255,.1); position: relative; overflow: hidden; }
-.liquid-glass::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.4px; background: linear-gradient(180deg, rgba(255,255,255,.45) 0%, rgba(255,255,255,.15) 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,.15) 80%, rgba(255,255,255,.45) 100%); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
-.text-glow { text-shadow: 0 0 40px rgba(255,255,255,.4), 0 0 80px rgba(255,255,255,.2), 0 0 120px rgba(255,255,255,.1); }
-.button-glow { box-shadow: 0 0 20px rgba(255,255,255,.3), 0 0 40px rgba(255,255,255,.1); }
+:root {
+  --u: min(calc(100vw / 1280), calc(100dvh / 760));
+  --color-ink: #ffffff;
+  --color-ink-muted: #ededed;
+  --color-panel: rgba(10, 10, 12, .86);
+  --color-button: #fdfdfd;
+  --color-button-ink: #050505;
+  --color-glass: rgba(0, 0, 0, .78);
+  --color-glass-border: rgba(255, 255, 255, .09);
+  --color-focus-current: #a78bfa;
+  --color-page: #000000;
+  /* Proposed section layout values, not global tokens. */
+  --section-background: #050505;
+  --section-message-accent: #a78bfa;
+  --dx: 8.5;
+  --dy: 13.1;
+  --e-reveal: cubic-bezier(.16, 1, .3, 1);
+  --e-soft: cubic-bezier(.25, .8, .3, 1);
+  --radius-cta: calc(19.5 * var(--u));
+  /* Proposed correction only; not current implementation. */
+  --color-focus-on-light: #050505;
+  --color-focus-on-dark: #ffffff;
+  /* Pending: semantic success/warning/error/info and other roles. */
+}
+@supports not (height: 100dvh) {
+  :root {
+    --u: min(calc(100vw / 1280), calc(100vh / 760));
+  }
+}
+@media (max-width: 1160px) {
+  :root {
+    --u: min(max(.9px, min(calc(100vw / 1280), calc(100dvh / 760))),
+      calc((100vw - 72px) / 575), calc(100dvh / 620));
+  }
+}
+@media (max-width: 552px) { :root { --u: 1px; } }
 ```
 
-Keep horizontal overflow hidden without locking vertical scrolling. Add clear `:focus-visible` styling and reduced-motion handling without altering the requested visual identity.
+Tailwind v3 mapping (extend only; handwritten CSS is currently used):
+
+```js
+// tailwind.config.js (package.json uses type: module)
+export default {
+  theme: {
+    extend: {
+      colors: {
+        ink: 'var(--color-ink)',
+        'ink-muted': 'var(--color-ink-muted)',
+        panel: 'var(--color-panel)',
+        button: 'var(--color-button)',
+        'button-ink': 'var(--color-button-ink)',
+        glass: 'var(--color-glass)',
+        'glass-border': 'var(--color-glass-border)',
+        'focus-current': 'var(--color-focus-current)',
+        page: 'var(--color-page)',
+      },
+      spacing: { unit: 'var(--u)' },
+      translate: {
+        dx: 'calc(var(--dx) * var(--u))',
+        dy: 'calc(var(--dy) * var(--u))',
+      },
+      transitionTimingFunction: {
+        reveal: 'var(--e-reveal)',
+        soft: 'var(--e-soft)',
+      },
+      borderRadius: {
+        cta: 'var(--radius-cta)',
+        full: '999px',
+      },
+      // Proposed only, not current: focus-on-light '#050505', focus-on-dark '#ffffff'.
+      // Pending: semantic success/warning/error/info and other roles.
+      // Responsive --u overrides below feed --radius-cta, translate, and spacing values.
+      fontFamily: { sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+    },
+  },
+};
+```
+
+The CTA radius token is `calc(19.5 * var(--u))`, so it follows the intentional responsive `--u` overrides; `999px` remains the separate full-pill radius. The `@supports` fallback replaces the desktop base `100dvh` calculation with `100vh` when dynamic viewport units are unsupported; the tablet clamp and mobile `--u: 1px` override remain intentional responsive contexts. The Tailwind scale is a convenience mapping, not proof that utilities generate the current UI. React/Vite/TypeScript and Tailwind are present in project configuration; the hero styling is handwritten CSS. Responsive overrides of `--u` are intentional, so a consumer should preserve the desktop reference scaling, tablet clamps, and mobile fixed-unit regime rather than treating `--u` as globally constant.
+
+## 13. Pending assumptions
+
+- Brand, audience, and product context: conflicting repository and document evidence; unresolved.
+- H2–H6, body variants beyond the hero paragraph, caption, and code typography: not evidenced.
+- Semantic success/warning/error/info colors and surfaces beyond the evidenced responsive menu panel: not evidenced.
+- CTA and navigation destinations: not evidenced; some navigation controls are disabled placeholders.
+- Form design and behavior: no forms present.
+- Dynamic video contrast: not measured and not certifiable from solid-color calculations; hero currently has no scrim. The black scrim recommendation is proposed, not current.
+- Dual black/white focus treatment is a proposed correction; current purple focus remains a known contrast issue pending implementation.
+- The proposed GenomIA section is implemented in `src/components/WhatIsGenomiaSection.tsx` and its colocated CSS; spacing, typography, frame, and reveal values remain proposals rather than a finalized global system.
