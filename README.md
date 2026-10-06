@@ -1,6 +1,6 @@
 # Genomia Forms
 
-React and Vite application for the Sellix hero design. The page implementation is in `src/pages/HomePage.tsx` with its styles colocated in `src/pages/HomePage.css`.
+React and Vite application for GenomIA. Pages live in `src/pages/`, sections in `src/components/<section>/` with their styles colocated, and shared UI in `src/components/ui/`.
 
 ## Development
 
