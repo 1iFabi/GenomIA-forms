@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
-import Arrow from '../ui/Arrow';
-import Placeholder from '../ui/Placeholder';
 import Navbar from './Navbar';
+import { ABOUT_ID, scrollToSection } from './Scrolltosection.ts';
 import PartnersMarquee from '../partners/PartnersMarquee';
 import './HeroSection.css';
 
@@ -202,9 +201,27 @@ export default function HeroSection() {
           en una sola plataforma.
         </p>
         <div className="ctas">
-          <Placeholder className="btn btn-lg btn-ghost">
-            Descubre<Arrow />
-          </Placeholder>
+          <a
+            className="btn btn-lg btn-ghost btn-discover"
+            href={`#${ABOUT_ID}`}
+            onClick={(event) => scrollToSection(event, ABOUT_ID)}
+          >
+            Descubre
+            <svg
+              className="arw-down"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 4v15M6 13.5l6 6 6-6"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </a>
         </div>
       </div>
       <PartnersMarquee />

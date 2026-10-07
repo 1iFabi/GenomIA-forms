@@ -73,9 +73,10 @@
   left: 0;
   width: 100%;
   height: calc(67 * var(--u));
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
+  column-gap: calc(48 * var(--u));
   padding: 0 calc(28 * var(--u));
 }
 
@@ -102,22 +103,56 @@
 }
 
 
+.nav-side {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
 .nav-actions {
   display: flex;
   align-items: center;
   gap: calc(22 * var(--u));
 }
 
+/* Right of the logo: "Quiénes somos" next to it, "Postula" at the far end. */
+.nav-actions-right {
+  width: 100%;
+  justify-content: space-between;
+}
+
 .nav-link {
+  position: relative;
+  padding: calc(6 * var(--u)) 0;
   color: #c8deef;
   font-size: calc(12.5 * var(--u));
   font-weight: 500;
   text-decoration: none;
-  transition: color .18s ease;
+  transition: color .4s var(--e-soft);
 }
 
-.nav-link:hover {
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .5s var(--e-reveal);
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
   color: #fff;
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .btn {
@@ -140,6 +175,14 @@
 .btn-nav-start {
   color: #050505;
   background: #fff;
+  transition:
+    background .4s var(--e-soft),
+    transform .4s var(--e-soft);
+}
+
+.btn-nav-start:hover {
+  background: var(--white-btn);
+  transform: translateY(calc(-1.5 * var(--u)));
 }
 
 .burger {
@@ -234,12 +277,36 @@
   padding: 0 calc(17.4 * var(--u));
   border: 1px solid var(--glass-line);
   backdrop-filter: blur(2px);
-  transition: background .18s ease, border-color .18s ease;
+  transition:
+    background .45s var(--e-soft),
+    border-color .45s var(--e-soft),
+    transform .45s var(--e-soft),
+    box-shadow .45s var(--e-soft);
 }
 
 .btn-ghost:hover:not(:disabled) {
   background: rgba(8, 34, 67, .9);
   border-color: rgba(140, 208, 255, .56);
+  transform: translateY(calc(-2 * var(--u)));
+  box-shadow: 0 calc(10 * var(--u)) calc(28 * var(--u)) rgba(80, 170, 255, .16);
+}
+
+.arw-down {
+  flex: none;
+  width: max(12px, calc(12 * var(--u)));
+  height: max(12px, calc(12 * var(--u)));
+  animation: arrowFloat 2.4s ease-in-out infinite;
+}
+
+@keyframes arrowFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(calc(3 * var(--u)));
+  }
 }
 
 .btn-lg .arw {
@@ -253,6 +320,7 @@
 
 button:focus-visible,
 .nav a:focus-visible,
+.ctas a:focus-visible,
 .menu a:focus-visible {
   outline: 2px solid #8cd0ff;
   outline-offset: 3px;
@@ -543,6 +611,7 @@ html.anim .ln-i {
 }
 
 html.anim .logo,
+html.anim .nav-link,
 html.anim .burger,
 html.anim .nav-actions .btn,
 html.anim .sub,
@@ -650,6 +719,14 @@ html.anim.go .burger {
   animation: pillIn .55s var(--e-soft) .68s both;
 }
 
+html.anim.go .nav-side-left .nav-link {
+  animation: subInFlat .7s var(--e-soft) .6s both;
+}
+
+html.anim.go .nav-actions-right .nav-link {
+  animation: subInFlat .7s var(--e-soft) .68s both;
+}
+
 
 html.anim.go .ctas .btn-ghost {
   animation: pillIn .70s var(--e-reveal) .97s both;
@@ -672,6 +749,7 @@ html.anim.go .partners {
   }
 
   html.anim .logo,
+  html.anim .nav-link,
   html.anim .burger,
   html.anim .nav-actions .btn,
   html.anim .sub,

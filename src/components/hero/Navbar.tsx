@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Arrow from '../ui/Arrow';
 import brandLogo from '../../assets/genomia.png';
 import { APPLY_HASH } from '../apply/ApplyDialog';
+import { ABOUT_ID, TEAM_ID, scrollToSection } from './Scrolltosection.ts';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,33 +43,52 @@ export default function Navbar() {
   return (
     <>
       <header className="nav">
-        <img className="logo" src={brandLogo} alt="GenomIA" />
-        <div className="nav-actions">
-          <a className="nav-link" href="#quienes-somos">
-            Quiénes somos
-          </a>
-          <a className="btn btn-nav-start" href={APPLY_HASH}>
-            Postula
-          </a>
+        <div className="nav-side nav-side-left">
+          <div className="nav-actions">
+            <a
+              className="nav-link"
+              href={`#${ABOUT_ID}`}
+              onClick={(event) => scrollToSection(event, ABOUT_ID)}
+            >
+              ¿Qué es GenomIA?
+            </a>
+          </div>
         </div>
-        <button
-          ref={burgerRef}
-          className="burger"
-          type="button"
-          aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
-          aria-expanded={menuOpen}
-          aria-controls="menu"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path
-              d="M4 7h16M4 12h16M4 17h16"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+
+        <img className="logo" src={brandLogo} alt="GenomIA" />
+
+        <div className="nav-side nav-side-right">
+          <div className="nav-actions nav-actions-right">
+            <a
+              className="nav-link"
+              href={`#${TEAM_ID}`}
+              onClick={(event) => scrollToSection(event, TEAM_ID)}
+            >
+              Quiénes somos
+            </a>
+            <a className="btn btn-nav-start" href={APPLY_HASH}>
+              Postula
+            </a>
+          </div>
+          <button
+            ref={burgerRef}
+            className="burger"
+            type="button"
+            aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+            aria-expanded={menuOpen}
+            aria-controls="menu"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        </div>
       </header>
 
       <nav
@@ -80,8 +100,21 @@ export default function Navbar() {
       >
         <a
           className="m-link"
-          href="#quienes-somos"
-          onClick={() => setMenuOpen(false)}
+          href={`#${ABOUT_ID}`}
+          onClick={(event) => {
+            setMenuOpen(false);
+            scrollToSection(event, ABOUT_ID);
+          }}
+        >
+          ¿Qué es GenomIA?
+        </a>
+        <a
+          className="m-link"
+          href={`#${TEAM_ID}`}
+          onClick={(event) => {
+            setMenuOpen(false);
+            scrollToSection(event, TEAM_ID);
+          }}
         >
           Quiénes somos
         </a>
