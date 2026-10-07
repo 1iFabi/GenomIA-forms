@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 import Arrow from '../ui/Arrow';
 import Alex from '../../assets/team/Alex.jpg';
 import Andres from '../../assets/team/Andres.png';
@@ -51,124 +52,132 @@ const TEAM: TeamMember[] = [
   },
 ];
 
+const INTERVAL_MS = 6000;
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export default function TeamSection() {
-  const railRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ index: 0, atStart: true, atEnd: false });
+  const [active, setActive] = useState(0);
+  const [playing, setPlaying] = useState(() => !prefersReducedMotion());
+  const [hovering, setHovering] = useState(false);
 
-  const updatePosition = useCallback(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-
-    const first = rail.firstElementChild as HTMLElement | null;
-    const second = first?.nextElementSibling as HTMLElement | null;
-    const step = first && second ? second.offsetLeft - first.offsetLeft : rail.clientWidth;
-    const index = Math.min(TEAM.length - 1, Math.max(0, Math.round(rail.scrollLeft / step)));
-    const atStart = rail.scrollLeft < 2;
-    const atEnd = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 2;
-
-    setPosition((previous) =>
-      previous.index === index && previous.atStart === atStart && previous.atEnd === atEnd
-        ? previous
-        : { index, atStart, atEnd },
-    );
-  }, []);
+  const go = (delta: number) => setActive((current) => (current + delta + TEAM.length) % TEAM.length);
 
   useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-
-    const observer = new ResizeObserver(updatePosition);
-    observer.observe(rail);
-    updatePosition();
-    return () => observer.disconnect();
-  }, [updatePosition]);
-
-  const move = (direction: -1 | 1) => {
-    const rail = railRef.current;
-    const first = rail?.firstElementChild as HTMLElement | null;
-    const second = first?.nextElementSibling as HTMLElement | null;
-    if (!rail || !first || !second) return;
-
-    rail.scrollTo({
-      left: (second.offsetLeft - first.offsetLeft) * (position.index + direction),
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-    });
-  };
+    if (!playing || hovering) return;
+    const timer = window.setTimeout(() => go(1), INTERVAL_MS);
+    return () => window.clearTimeout(timer);
+  }, [active, playing, hovering]);
 
   return (
     <section id="quienes-somos" className="team" aria-labelledby="team-title">
-      <div className="team__inner">
-        <div className="team__head">
-          <h2 id="team-title" className="team__title">
-            Las personas detrás de GenomIA
-          </h2>
-          <p className="team__intro">
-            Un equipo de investigación chileno que une genómica, ciencia de datos y salud para
-            que tu genoma se entienda en palabras.
-          </p>
-        </div>
+      <div className="team__head">
+        <h2 id="team-title" className="team__title">
+          Las personas <span className='team__title__down'>detrás de GenomIA</span>
+        </h2>
+        <p className="team__intro">
+          Un equipo de investigación chileno que une genómica, ciencia de datos y salud para que tu
+          genoma se entienda en palabras.
+        </p>
+      </div>
 
-        <div className="team__toolbar">
-          <span className="team__count" aria-live="polite">
-            {position.index + 1} de {TEAM.length}
-          </span>
-          <div className="team__controls">
-            <button
-              type="button"
-              className="team__arrow team__arrow--prev"
-              aria-label="Ver integrante anterior"
-              aria-controls="team-rail"
-              disabled={position.atStart}
-              onClick={() => move(-1)}
-            >
-              <Arrow /> Anterior
-            </button>
-            <button
-              type="button"
-              className="team__arrow"
-              aria-label="Ver integrante siguiente"
-              aria-controls="team-rail"
-              disabled={position.atEnd}
-              onClick={() => move(1)}
-            >
-              Siguiente <Arrow />
-            </button>
-          </div>
+      <div
+        id="team-stage"
+        className="team__stage"
+        style={{ '--active': active } as CSSProperties}
+        role="region"
+        aria-roledescription="carrusel"
+        aria-label="Integrantes del equipo"
+        tabIndex={0}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+        onFocus={() => setHovering(true)}
+        onBlur={() => setHovering(false)}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            event.preventDefault();
+            go(event.key === 'ArrowLeft' ? -1 : 1);
+          }
+        }}
+      >
+        <div className="team__track">
+          {TEAM.map((member, i) => {
+            const isActive = i === active;
+            return (
+              <article
+                key={member.name}
+                className="team__card"
+                data-active={isActive}
+                style={{ '--d': Math.abs(i - active) } as CSSProperties}
+                role="group"
+                aria-roledescription="diapositiva"
+                aria-label={`${i + 1} de ${TEAM.length}`}
+                onClick={() => setActive(i)}
+              >
+                <img className="team__photo" src={member.photo} alt="" loading="lazy" />
+                <div className="team__caption">
+                  <h3 className="team__name">{member.name}</h3>
+                  {member.qualifications && (
+                    <div className="team__details">
+                      <ul className="team__credentials">
+                        {member.qualifications.map(({ degree, institution }) => (
+                          <li key={degree}>
+                            <span className="team__degree">{degree}</span>
+                            <span className="team__institution">{institution}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
+      </div>
 
-        <div
-          id="team-rail"
-          ref={railRef}
-          className="team__rail"
-          role="region"
-          aria-roledescription="carrusel"
-          aria-label="Integrantes del equipo"
-          tabIndex={0}
-          onScroll={updatePosition}
-          onKeyDown={(event) => {
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-              event.preventDefault();
-              move(event.key === 'ArrowLeft' ? -1 : 1);
-            }
-          }}
+      <span className="team__sr" aria-live={playing ? 'off' : 'polite'}>
+        {`Integrante ${active + 1} de ${TEAM.length}: ${TEAM[active].name}`}
+      </span>
+
+      <div className="team__controls">
+        <button
+          type="button"
+          className="team__btn team__btn--prev"
+          aria-label="Integrante anterior"
+          aria-controls="team-stage"
+          onClick={() => go(-1)}
         >
-          {TEAM.map((member) => (
-            <article key={member.name} className="team__card">
-              <img className="team__photo" src={member.photo} alt="" loading="lazy" />
-              <h3 className="team__name">{member.name}</h3>
-              {member.qualifications && (
-                <ul className="team__credentials">
-                  {member.qualifications.map(({ degree, institution }) => (
-                    <li key={degree}>
-                      <span className="team__degree">{degree}</span>
-                      <span className="team__institution">{institution}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </article>
-          ))}
-        </div>
+          <Arrow />
+        </button>
+        <button
+          type="button"
+          className="team__btn"
+          aria-label={playing ? 'Pausar la rotación automática' : 'Reanudar la rotación automática'}
+          aria-pressed={!playing}
+          onClick={() => setPlaying((value) => !value)}
+        >
+          {playing ? (
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+              <rect x="2.5" y="1.5" width="3" height="11" rx="1" fill="currentColor" />
+              <rect x="8.5" y="1.5" width="3" height="11" rx="1" fill="currentColor" />
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+              <path d="M3.5 1.8v10.4a.5.5 0 0 0 .77.42l8-5.2a.5.5 0 0 0 0-.84l-8-5.2a.5.5 0 0 0-.77.42Z" fill="currentColor" />
+            </svg>
+          )}
+        </button>
+        <button
+          type="button"
+          className="team__btn"
+          aria-label="Integrante siguiente"
+          aria-controls="team-stage"
+          onClick={() => go(1)}
+        >
+          <Arrow />
+        </button>
       </div>
     </section>
   );

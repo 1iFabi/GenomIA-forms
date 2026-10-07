@@ -1,29 +1,32 @@
 .team {
   --team-gutter: clamp(24px, 7vw, 96px);
-  --team-gap: clamp(18px, 2vw, 28px);
+  --team-tint: color-mix(in srgb, var(--page-accent) 16%, transparent);
+  --team-soft: color-mix(in srgb, var(--page-ink) 7%, transparent);
 
-  padding: clamp(88px, 11vw, 148px) var(--team-gutter) clamp(96px, 11vw, 148px);
+  position: relative;
+  padding: clamp(88px, 11vw, 148px) 0 clamp(80px, 9vw, 120px);
   color: var(--page-ink);
   scroll-margin-top: 24px;
+  overflow-x: clip;
+  background:
+    radial-gradient(38vw 26vw at 8% 14%, var(--team-tint), transparent 70%),
+    radial-gradient(34vw 24vw at 94% 20%, color-mix(in srgb, var(--page-accent) 9%, transparent), transparent 70%);
 }
 
-.team__inner {
-  max-width: 1240px;
-  margin: 0 auto;
-}
+/* Encabezado */
 
 .team__head {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(280px, .8fr);
-  align-items: end;
-  gap: 40px;
-  margin-bottom: clamp(40px, 5vw, 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 var(--team-gutter);
+  text-align: center;
 }
 
 .team__title {
-  max-width: 20ch;
+  max-width: 18ch;
   margin: 0;
-  font-size: clamp(2.75rem, 5.2vw, 4.625rem);
+  font-size: clamp(2.5rem, 5.4vw, 4.5rem);
   font-weight: 500;
   line-height: 1.08;
   letter-spacing: -.035em;
@@ -31,122 +34,167 @@
 }
 
 .team__intro {
-  max-width: 48ch;
-  margin: 0 0 .3em;
+  max-width: 50ch;
+  margin: 24px 0 0;
   color: var(--page-ink-soft);
-  font-size: clamp(1rem, 1.25vw, 1.125rem);
+  font-size: clamp(1rem, 1.3vw, 1.1875rem);
   font-weight: 400;
   line-height: 1.6;
+  text-wrap: balance;
 }
 
-.team__toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 20px 0 24px;
-  border-top: 1px solid var(--page-line);
+/* Escenario del carrusel, a todo el ancho */
+
+.team__stage {
+  --w: clamp(220px, 21vw, 296px);
+  --gap: clamp(14px, 2vw, 28px);
+
+  padding: clamp(56px, 7vw, 88px) 0 clamp(72px, 8vw, 104px);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
 
-.team__count {
-  color: var(--page-ink-soft);
-  font-size: .875rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.team__controls {
-  display: flex;
-  gap: clamp(14px, 2.5vw, 32px);
-}
-
-.team__arrow {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  gap: 9px;
-  padding: 4px 0;
-  border: 0;
-  background: none;
-  color: var(--page-ink);
-  font: inherit;
-  font-size: .875rem;
-  font-weight: 500;
-  line-height: 1.25;
-  white-space: nowrap;
-  cursor: pointer;
-  text-underline-offset: 5px;
-  transition: color .2s ease;
-}
-
-.team__arrow .arw {
-  width: 16px;
-  height: 14px;
-}
-
-.team__arrow--prev .arw {
-  transform: rotate(180deg);
-}
-
-.team__arrow:hover:not(:disabled) {
-  color: var(--page-accent);
-  text-decoration: underline;
-}
-
-.team__arrow:focus-visible,
-.team__rail:focus-visible {
+.team__stage:focus-visible {
   outline: 2px solid var(--page-accent);
-  outline-offset: 3px;
+  outline-offset: -4px;
 }
 
-.team__arrow:disabled {
-  color: var(--page-ink-faint);
-  cursor: not-allowed;
-}
-
-.team__rail {
+.team__track {
   display: flex;
-  gap: var(--team-gap);
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
+  align-items: flex-start;
+  gap: var(--gap);
+  width: max-content;
+  margin-left: 50%;
+  transform: translateX(calc(-1 * (var(--active) * (var(--w) + var(--gap)) + var(--w) / 2)));
+  transition: transform .9s cubic-bezier(.22, .7, .2, 1);
 }
 
-.team__rail::-webkit-scrollbar {
-  display: none;
-}
+/* Tarjeta */
 
 .team__card {
-  flex: 0 0 calc((100% - 2 * var(--team-gap)) / 3);
-  min-width: 0;
-  scroll-snap-align: start;
+  position: relative;
+  flex: 0 0 var(--w);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--team-soft);
+  cursor: pointer;
+  transform:
+    translateY(calc(min(var(--d), 3) * 26px))
+    scale(calc(1 - min(var(--d), 1) * .1));
+  transition:
+    transform .9s cubic-bezier(.22, .7, .2, 1),
+    box-shadow .9s ease;
+}
+
+.team__card[data-active="true"] {
+  z-index: 1;
+  cursor: default;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--page-ink) 6%, transparent),
+    0 30px 70px -20px color-mix(in srgb, var(--page-accent) 40%, transparent);
 }
 
 .team__photo {
   display: block;
   width: 100%;
-  aspect-ratio: 5 / 4;
-  margin-bottom: 22px;
-  border-radius: 14px;
+  height: 100%;
   object-fit: cover;
-  object-position: center 32%;
+  object-position: center 18%;
+  filter: grayscale(1) contrast(1.03);
+  transition: filter .9s ease;
+}
+
+.team__card[data-active="true"] .team__photo {
+  filter: grayscale(0);
+}
+
+/* Velo de color en la tarjeta activa y degradado inferior para legibilidad */
+
+.team__card::before,
+.team__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.team__card::before {
+  background: linear-gradient(155deg, var(--team-tint), transparent 55%);
+  opacity: 0;
+  transition: opacity .9s ease;
+}
+
+.team__card[data-active="true"]::before {
+  opacity: 1;
+}
+
+.team__card::after {
+  background: linear-gradient(to top, rgba(0, 0, 0, .5), transparent 58%);
+}
+
+/* Panel de vidrio con nombre y descripción */
+
+.team__caption {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 1;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 15px;
+  background: rgba(18, 18, 18, .36);
+  color: #fff;
+  text-align: left;
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
 }
 
 .team__name {
   margin: 0;
-  font-size: clamp(1.375rem, 2vw, 1.625rem);
+  font-size: clamp(1rem, 1.3vw, 1.125rem);
   font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: -.025em;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+}
+
+/* La descripción se despliega solo en la persona activa */
+
+.team__details {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    grid-template-rows .7s cubic-bezier(.22, .7, .2, 1),
+    opacity .4s ease,
+    visibility 0s .7s;
+}
+
+.team__card[data-active="true"] .team__details {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+  transition:
+    grid-template-rows .7s cubic-bezier(.22, .7, .2, 1) .25s,
+    opacity .5s ease .4s,
+    visibility 0s 0s;
 }
 
 .team__credentials {
   display: grid;
-  gap: 16px;
-  max-width: 43ch;
-  margin: 16px 0 0;
+  gap: 10px;
+  min-height: 0;
+  margin: 0;
   padding: 0;
+  overflow: hidden;
   list-style: none;
+}
+
+.team__details .team__credentials {
+  padding-top: 10px;
 }
 
 .team__degree,
@@ -155,59 +203,104 @@
 }
 
 .team__degree {
-  color: var(--page-ink);
-  font-size: 1rem;
+  font-size: .875rem;
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 .team__institution {
-  margin-top: 3px;
-  color: var(--page-ink-soft);
-  font-size: .875rem;
-  font-weight: 400;
-  line-height: 1.5;
+  margin-top: 2px;
+  color: rgba(255, 255, 255, .72);
+  font-size: .8125rem;
+  line-height: 1.4;
 }
 
-@media (max-width: 900px) {
-  .team__head {
-    grid-template-columns: minmax(0, 1fr) minmax(220px, .8fr);
-  }
+/* Controles */
 
-  .team__card {
-    flex-basis: calc((100% - var(--team-gap)) / 2);
-  }
+.team__controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
 }
+
+.team__btn {
+  display: inline-grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--team-soft);
+  color: var(--page-ink);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+.team__btn .arw {
+  width: 16px;
+  height: 14px;
+}
+
+.team__btn--prev .arw {
+  transform: rotate(180deg);
+}
+
+.team__btn:hover {
+  background: var(--team-tint);
+  color: var(--page-accent);
+}
+
+.team__btn:active {
+  transform: scale(.94);
+}
+
+.team__btn:focus-visible {
+  outline: 2px solid var(--page-accent);
+  outline-offset: 3px;
+}
+
+.team__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Responsive */
 
 @media (max-width: 640px) {
-  .team__head {
-    display: block;
-    margin-bottom: 40px;
+  .team__stage {
+    --w: min(68vw, 270px);
+    --gap: 14px;
   }
 
   .team__title {
-    font-size: clamp(2.375rem, 9vw, 3.25rem);
+    font-size: clamp(2.25rem, 9vw, 3rem);
   }
 
   .team__intro {
-    margin-top: 24px;
-  }
-
-  .team__toolbar {
-    padding: 16px 0 20px;
+    margin-top: 20px;
   }
 
   .team__card {
-    flex-basis: 100%;
-  }
-
-  .team__photo {
-    margin-bottom: 18px;
+    transform:
+      translateY(calc(min(var(--d), 3) * 18px))
+      scale(calc(1 - min(var(--d), 1) * .08));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .team__arrow {
+  .team__track,
+  .team__card,
+  .team__photo,
+  .team__card::before,
+  .team__details,
+  .team__card[data-active="true"] .team__details,
+  .team__btn {
     transition: none;
   }
 }

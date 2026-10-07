@@ -9,12 +9,6 @@ export default function HomePage() {
       <HeroSection />
       <WhatIsGenomiaSection />
       <TeamSection />
-      <footer className="site-footer">
-        <p>
-          GenomIA no es una herramienta clínica y no reemplaza la consulta con un profesional de la
-          salud.
-        </p>
-      </footer>
       <ApplyDialog />
     </>
   );
