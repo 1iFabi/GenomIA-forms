@@ -6,9 +6,7 @@ import PartnersMarquee from '../partners/PartnersMarquee';
 import './HeroSection.css';
 
 const VIDEO =
-  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4';
-const POSTER =
-  'https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp';
+  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260613_180732_a54afbf6-b30d-470e-861f-669871f09f67.mp4';
 
 export default function HeroSection() {
   const videoARef = useRef<HTMLVideoElement>(null);
@@ -159,7 +157,7 @@ export default function HeroSection() {
       <div
         className="bg"
         role="img"
-        aria-label="Stylised globe of Earth rendered as a purple dot matrix against a starfield, slowly rotating"
+        aria-label="Planeta Tierra azul girando lentamente sobre un fondo estrellado"
       >
         <video
           ref={videoARef}
@@ -171,7 +169,6 @@ export default function HeroSection() {
           preload="auto"
           disablePictureInPicture
           aria-hidden="true"
-          poster={POSTER}
         >
           <source src={VIDEO} type="video/mp4" />
         </video>
@@ -184,7 +181,6 @@ export default function HeroSection() {
           preload="auto"
           disablePictureInPicture
           aria-hidden="true"
-          poster={POSTER}
         >
           <source src={VIDEO} type="video/mp4" />
         </video>
@@ -206,9 +202,6 @@ export default function HeroSection() {
           en una sola plataforma.
         </p>
         <div className="ctas">
-          <Placeholder className="btn btn-lg btn-primary">
-            Postula <Arrow />
-          </Placeholder>
           <Placeholder className="btn btn-lg btn-ghost">
             Descubre<Arrow />
           </Placeholder>

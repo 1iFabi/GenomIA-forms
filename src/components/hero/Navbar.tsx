@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Arrow from '../ui/Arrow';
-import Placeholder from '../ui/Placeholder';
-
-const items = ['Products', 'Solutions', 'Resources', 'Company', 'Pricing'];
+import brandLogo from '../../assets/genomia.png';
+import { APPLY_HASH } from '../apply/ApplyDialog';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -43,18 +42,20 @@ export default function Navbar() {
   return (
     <>
       <header className="nav">
-        <Placeholder className="logo" aria-label="Inicio de GenomIA">
-          GenomIA
-        </Placeholder>
+        <img className="logo" src={brandLogo} alt="GenomIA" />
         <div className="nav-actions">
-          <Placeholder className="btn btn-login">Descubre</Placeholder>
-          <Placeholder className="btn btn-nav-start">Postula</Placeholder>
+          <a className="nav-link" href="#quienes-somos">
+            Quiénes somos
+          </a>
+          <a className="btn btn-nav-start" href={APPLY_HASH}>
+            Postula
+          </a>
         </div>
         <button
           ref={burgerRef}
           className="burger"
           type="button"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
           aria-expanded={menuOpen}
           aria-controls="menu"
           onClick={() => setMenuOpen((open) => !open)}
@@ -74,19 +75,23 @@ export default function Navbar() {
         ref={menuRef}
         className={`menu${menuOpen ? ' open' : ''}`}
         id="menu"
-        aria-label="Mobile navigation"
+        aria-label="Navegación móvil"
         aria-hidden={!menuOpen}
       >
-        {items.map((item) => (
-          <Placeholder key={item} className="menu-link">
-            {item}
-          </Placeholder>
-        ))}
-        <div className="divider" />
-        <Placeholder className="menu-link">Descubre</Placeholder>
-        <Placeholder className="m-start">
+        <a
+          className="m-link"
+          href="#quienes-somos"
+          onClick={() => setMenuOpen(false)}
+        >
+          Quiénes somos
+        </a>
+        <a
+          className="m-start"
+          href={APPLY_HASH}
+          onClick={() => setMenuOpen(false)}
+        >
           Postula <Arrow />
-        </Placeholder>
+        </a>
       </nav>
     </>
   );

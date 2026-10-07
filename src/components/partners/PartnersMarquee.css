@@ -11,7 +11,7 @@
   gap: 12px;
   padding: 72px 0 clamp(20px, 4.5dvh, 40px);
   /* Scrim so the logos read over every frame of the video. */
-  background: linear-gradient(to top, rgba(0, 0, 0, .78), rgba(0, 0, 0, .45) 55%, transparent);
+  background: linear-gradient(to top, var(--page-bg), rgba(4, 16, 31, .55) 55%, transparent);
   /* The transparent top must not swallow clicks meant for the CTAs. */
   pointer-events: none;
 }

@@ -2,9 +2,9 @@
 
 ## 1. Design principles
 
-- Center the hero message over edge-to-edge animated media.
-- Keep navigation compact and collapse it to a menu on narrower screens.
-- Use a bright primary CTA and a translucent secondary CTA.
+- Position the hero message above the brightest part of the Earth video.
+- Keep navigation compact: desktop shows “Quiénes somos” and “Postula”; narrower screens expose both through a burger menu.
+- Use a cool blue palette drawn from the Earth video for hero text and calls to action.
 - Scale the desktop composition with a reference unit; switch to fluid layout on small screens.
 
 ## 2. Typography
@@ -12,48 +12,46 @@
 | Element | Current evidence |
 |---|---|
 | Typeface | Plus Jakarta Sans is declared in handwritten CSS; system sans-serif fallback. |
-| Hero H1 | 500 weight; `calc(89 * var(--u))`; line height `calc(90 * var(--u))`; letter spacing `calc(-1 * var(--u))`. Two block lines. |
-| Hero body | 300 weight; `calc(17.4 * var(--u))`; line height `calc(27 * var(--u))`; letter spacing `calc(-0.30 * var(--u))`. |
-| CTA | 500 weight; `calc(13.3 * var(--u))`; line-height/letter spacing are not comprehensively specified. |
-| Navigation | Menu links are 500 / 15px tablet and 500 / 15.5px mobile. Other navigation scale is not established here. |
+| Hero H1 | 500 weight; `calc(72 * var(--u))`; line height `calc(75 * var(--u))`; letter spacing `calc(-1 * var(--u))`. Two block lines; the second is light blue. |
+| Hero body | 300 weight; `calc(14.5 * var(--u))`; line height `calc(23 * var(--u))`; letter spacing `calc(-0.30 * var(--u))`. |
+| CTA | 500 weight; `calc(12 * var(--u))`; line-height/letter spacing are not comprehensively specified. |
+| Navigation | Desktop actions use the 11.5u reference scale; responsive menu items use 14px text, with “Postula” at weight 600. |
 | H2–H6, caption, code | **Proposed:** the new section H2 uses `clamp(32px, 4vw, 52px)`, weight 500, line-height 1.08, and `-.04em` tracking; its paragraph uses 18px / 1.7 at weight 300. These are section-specific proposals, not an established global scale. |
 
-On mobile, H1 uses `min(74px, calc((100vw - 44px) / 6.9))`, line-height `1.04`, letter-spacing `-.02em`; short landscape caps it at 44px. Body uses `clamp(15.5px, 4vw, 16.5px)` and 1.6 line-height, with separate short-landscape values.
+On mobile, H1 uses `min(62px, calc((100vw - 44px) / 7.7))`, line-height `1.08`, letter-spacing `-.02em`; short landscape caps it at 40px, or `min(36px, calc((100vw - 44px) / 8.6))` on narrow short screens. Body uses `clamp(14.5px, 3.8vw, 15.5px)` and 1.6 line-height, with separate short-landscape values.
 
-**Pending:** brand, audience, and product context are unresolved. Repository package/README identify “Genomia Forms”; the current document title says “Sellix — Cross-border finance,” while hero copy references genetics. Do not infer or normalize the brand from these conflicting signals.
+**Pending:** audience and product context remain unresolved. The repository package/README identify “Genomia Forms,” the page title says “GenomIA,” and the hero references genetics; avoid inferring additional product claims.
 
 ## 3. Palette and contrast
 
 | Token / observed value | Use in current hero |
 |---|---|
-| `#ffffff` | Main hero text (`--ink`) and primary CTA hover. |
-| `#ededed` | Muted ink (`--ink-muted`). |
-| `#f6f6f6` | Subtitle. |
-| `#fdfdfd` | Primary CTA fill (`--white-btn`). |
-| `#050505` | Primary CTA text (`--btn-ink`). |
-| `rgba(10, 10, 12, .86)` | Current responsive menu panel surface. |
-| `rgba(0,0,0,.78)` | Secondary CTA glass fill. |
-| `rgba(255,255,255,.09)` | Secondary CTA border. |
+| `#f2f9ff` | Main hero text (`--ink`). |
+| `#c6e7ff` | Second headline line. |
+| `#c8deef` | Hero subtitle. |
+| `#d8f0ff` | Filled “Postula” action in the mobile menu and following section (`--white-btn`). |
+| `#09223c` | Filled action text (`--btn-ink`). |
+| `rgba(10,10,12,.86)` | Responsive menu panel surface. |
+| `rgba(5,22,45,.82)` | Secondary CTA glass fill. |
+| `rgba(140,208,255,.32)` | Secondary CTA border. |
 | `#a78bfa` | Current focus outline. |
 | `#000` | Page/video backing. |
 
 **Pending:** semantic success, warning, error, info, and general surface/text color roles are not evidenced; no values are assigned here.
 
-WCAG 2.1 sRGB calculations for solid pairs: white/black 21.00:1; `#ededed`/black 17.94:1; `#f6f6f6`/black 19.43:1; `#050505`/`#fdfdfd` 20.04:1. The secondary CTA text `#d9d9d9` over its `rgba(0,0,0,.78)` fill composited over worst-case white is approximately 8.30:1. These do not certify text over the changing video. No video contrast has been measured; hero copy currently has no scrim, so contrast against every frame cannot be certified.
-
-Known focus issue: current purple `#a78bfa` against `#fdfdfd` is 2.68:1, below the 3:1 UI contrast criterion. Against black it is 7.72:1. **Proposed correction, not current implementation:** use dual focus colors, black `#050505` on light (`#fdfdfd`, 20.04:1) and white `#ffffff` on dark (`#050505`, 20.38:1). **Proposed video mitigation, not current implementation:** a black scrim with opacity at least `.56` over a pure-white frame composites near `#707070`, yielding about 4.58:1 for `#f6f6f6`. Dynamic video still requires validation across actual frames.
+The palette follows the video's blue Earth and dark sky while keeping the headline and subtitle legible against the dark sky. The central “Descubre” action uses a dark blue translucent fill; the navigation “Postula” action is white. Dynamic video contrast has not been measured across frames; there is no hero scrim. The purple focus outline remains insufficient against light actions; a dark outline on light and a white outline on dark are proposed corrections, not current implementation.
 
 ## 4. Spacing and grid
 
-Desktop uses `--u: min(calc(100vw / 1280), calc(100dvh / 760))`; the authored reference is 1280×800, while unit height uses 760. Most desktop dimensions are multiples of `--u`. Hero content is centered with optical offsets `--dx: 8.5` and `--dy: 13.1` units. CTA gap is 7u; subtitle top margin 16.1u; CTA top margin 21.8u.
+Desktop uses `--u: min(calc(100vw / 1280), calc(100dvh / 760))`; the authored reference is 1280×800, while unit height uses 760. Most desktop dimensions are multiples of `--u`. Hero content uses optical offsets `--dx: 8.5` and `--dy: -58` units, bringing the copy above the bright Earth horizon. The single central “Descubre” action is centered beneath the subtitle, with a 21.8u top margin; the subtitle top margin is 16.1u.
 
 | Responsive range | Current behavior |
 |---|---|
 | Above 1160px | Proportional reference-unit layout; no reflow. |
-| At/below 1160px | Tablet unit formula adds minimum/clamped sizing; nav links/actions hide, burger appears; content and controls get minimum sizes. |
-| At/below 552px | `--u:1px`; 20px horizontal hero/nav padding; fluid headline and subtitle measure; subtitle breaks become natural wrapping. |
-| At/below 353px | CTAs stack vertically; button width capped at `min(100%,272px)`. |
-| At/below 552px and height at/below 460px | Short-landscape typography and spacing reductions. |
+| At/below 1160px | Tablet unit formula adds minimum/clamped sizing; desktop actions hide and a burger opens a compact menu with “Quiénes somos” and “Postula”. |
+| At/below 552px | `--u:1px`; 20px horizontal hero/nav padding; hero content is positioned at `top:43%`; fluid headline and subtitle measure; subtitle breaks become natural wrapping. |
+| At/below 353px | The sole central action is capped at `min(100%,272px)`. |
+| At/below 552px and height at/below 460px | Short-landscape typography and spacing reductions; hero content moves to `top:40%` to keep copy off the bright horizon, or `top:47%` at/below 353px wide so the heading clears the navbar. |
 
 The tablet `--u` override is `min(max(0.9px,min(100vw/1280,100dvh/760)),(100vw - 72px)/575,100dvh/620)`. Mobile intentionally sets `--u:1px`: the design stops scaling as a single desktop composition and uses fixed/minimum touch-friendly dimensions plus fluid text. A fallback uses `100vh` where `100dvh` is unavailable.
 
@@ -61,18 +59,16 @@ The tablet `--u` override is `min(max(0.9px,min(100vw/1280,100dvh/760)),(100vw -
 
 ## 5. Shape and elevation
 
-Primary and secondary hero CTAs are pill-shaped: desktop radius 19.5u; tablet at least 22px; mobile 23px. Mobile menu panel uses 20px radius, links 12px, and menu primary action 14px. Secondary CTA uses 2px backdrop blur and a subtle border. The responsive menu uses 22px backdrop blur and `0 24px 60px rgba(0,0,0,.55)` shadow. The background video fills/bleeds and is cropped with `object-fit:cover`, positioned at `51% 8%`.
+The single central “Descubre” action is pill-shaped: desktop radius 19.5u; tablet at least 22px; mobile 23px. Desktop navigation shows “Quiénes somos” and “Postula”; at narrower widths, a burger opens a 184px-wide panel with both actions. The panel has a 20px radius and 22px backdrop blur. The central action uses 2px backdrop blur and a subtle blue border. The background video fills/bleeds and is cropped with `object-fit:cover`, positioned at `51% 8%`.
 
 ## 6. Buttons
 
 | Control | Current appearance and behavior |
 |---|---|
-| Hero primary | “Get Started”; near-white fill, near-black text, arrow SVG; hover fill becomes white. |
-| Hero secondary | “Contact Sales”; dark translucent fill, `#d9d9d9` text, subtle white border and blur; hover increases fill/border opacity. |
-| Navigation actions | Source includes disabled placeholder buttons; destinations are **pending**. |
-| Responsive menu action | “Get Started” styled as a light filled action. |
+| Hero center | “Descubre”; dark navy translucent fill, pale blue text, arrow SVG, subtle blue border and blur; hover increases fill/border opacity. |
+| Navigation | Desktop: “Quiénes somos” scrolls to the team section and “Postula” opens the application dialog; the responsive menu exposes both actions. |
 
-Hero CTA dimensions: desktop 39u high, 19.5u radius, 13.3u text; tablet minimum 44px high / 15px text; mobile 46px high / 23px radius / 15px text. CTA destinations are **pending**; do not infer from labels. Current focus styling is a 2px `#a78bfa` outline offset 3px and pill radius; its contrast limitation is recorded above. Proposed dual focus tokens are normative recommendations, not implemented. No hover/focus state is evidence of a functional destination.
+The central CTA dimensions are: desktop 39u high, 19.5u radius, 12u text; tablet minimum 44px high / 14px text; mobile 46px high / 23px radius / 14px text. The central “Descubre” destination is not configured; do not infer one from the label. Current focus styling is a 2px `#a78bfa` outline offset 3px and pill radius; its contrast limitation is recorded above. Proposed dual focus tokens are normative recommendations, not implemented.
 
 ## 7. Forms
 
@@ -80,30 +76,31 @@ No forms or form controls are present in the current hero UI. Validation, labels
 
 ## 8. Other present components
 
-- **Header/navigation:** logo, desktop nav links and actions, and a burger control. At 1160px and below, desktop links/actions are hidden and burger is shown.
-- **Menu:** responsive panel with links and a primary action; opens with a short entrance animation. Escape closes it and returns focus to the burger; outside click and link selection close it.
-- **Hero copy:** Spanish H1 “Lee la historia que está / escrita en ti” and subtitle “Sumérgete en tu información genética y descubre los secretos de tu biología en una sola plataforma.”
-- **Video background:** two layered video elements cross-fade at the loop boundary; decorative media is hidden from assistive technology in the source markup.
+- **Header/navigation:** the top-left brand is the local `src/assets/genomia.png` wordmark (28u high on desktop, 24px on mobile), with the accessible name “GenomIA”. Desktop displays “Quiénes somos” and “Postula”; at 1160px and below they move into the burger menu.
+- **Hero copy:** Spanish H1 “Lee la historia que / está escrita en ti” and subtitle “Sumérgete en tu información genética y descubre los secretos de tu biología en una sola plataforma.”
+- **Video background:** two layered video elements use the same blue rotating-Earth clip and cross-fade at the loop boundary. Neither has a `poster` image; the background remains black until the video renders. The video elements are hidden from assistive technology, while their container has a descriptive label.
+- **Team carousel:** Five bundled portraits (Alex, Andrés, Carol, Gabriel and Susan) appear in a manually navigated, scroll-snapping row: three profiles on desktop, two on tablet, one on mobile. The dark-blue section pairs large photographs with unboxed captions.
+  Each supplied qualification is split into its degree and university, with distinct type sizes and spacing; Andrés has no qualification text because none was provided. The introductory paragraph uses a 400-weight reading style.
+  Text buttons “Anterior” and “Siguiente” reuse `src/components/ui/Arrow.tsx`; the counter reads “1 de 5”. Buttons disable at the ends, the focused rail responds to horizontal arrow keys, and reduced-motion preference disables smooth button scrolling.
 - **What is GenomIA scroll section (proposed):** sibling section immediately below the full-screen hero; left-aligned heading “QUÉ ES GenomIA” and temporary Lorem ipsum description, plus a right-side CSS phone frame with an ordered list of three Spanish messages. The list remains semantic and present in reading order regardless of its visual reveal; it is not a modal.
 - Phone frame proposal: 300px wide, 440px minimum height, 8px white border, 38px radius, near-black interior, violet-accented message bubbles.
 - No table or alert component is evidenced.
 
 ## 9. Iconography and images
 
-The hero uses inline SVG arrow icons; no icon package is evidenced. Exact media sources in current markup:
+The hero uses inline SVG arrow icons and a bundled PNG wordmark; no icon package is evidenced. Team portraits are bundled PNG, JPG and WebP files. The only hero background media source is the video:
 
-- Video: `https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260912_104036_bd6924f6-3c8e-417e-8465-6d03c8c2e9e6.mp4`
-- Poster: `https://d2ol7oe51mr4n9.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/82e7eb75-c65f-490a-99b5-f3d1cad54200.webp`
+- Video: `https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260613_180732_a54afbf6-b30d-470e-861f-669871f09f67.mp4`
 
-The source markup's current ARIA label describes a “Stylised globe of Earth rendered as a purple dot matrix against a starfield, slowly rotating.” This is label text, not an independently verified description of the visual video content. The actual video asset's visual content is unverified. Do not treat the label as a measured contrast guarantee.
+The container's ARIA label describes a slowly rotating blue Earth against a starfield. The rendered video was visually checked; video contrast still varies frame by frame and is not certified by the label.
 
 ## 10. Motion
 
-Video layers transition opacity over `.9s` with linear timing for loop cross-fades. **Proposed section message reveal:** each message rises/fades in over `.55s`, with `.7s` additional delay between messages. Reduced-motion preference shows all messages immediately without animation. Button transitions are `.18s ease`; menu entrance is `.18s ease`. Entrance choreography runs once: headline lines 1.05s (delays .12s/.22s), logo .62s, navigation .55s with .045s stagger, subtitle .85s, and CTA elements .55–.70s; final secondary CTA starts at .97s and finishes at 1.67s. Mobile shortens headline to .92s and adjusts CTA delays. Reduced-motion preference suppresses entrance and disables transitions/animations; video script holds the first frame.
+Video layers transition opacity over `.9s` with linear timing for loop cross-fades. **Proposed section message reveal:** each message rises/fades in over `.55s`, with `.7s` additional delay between messages. Reduced-motion preference shows all messages immediately without animation. Button transitions are `.18s ease`; menu entrance is `.18s ease`. Entrance choreography runs once: headline lines 1.05s (delays .12s/.22s), logo .62s, navigation .55s, subtitle .85s, and the single central CTA .70s (starting at .97s). Mobile shortens headline to .92s and starts the CTA at .90s. Reduced-motion preference suppresses entrance and disables transitions/animations; video script holds the first frame.
 
 ## 11. Accessibility
 
-Source provides a main hero, semantic heading and paragraph, video elements marked `aria-hidden="true"`, a separately labelled section heading and ordered message list (no live region, so the list is not announced as an unsolicited update), a burger button with `aria-expanded` and changing `aria-label`, Escape dismissal with focus return, and `prefers-reduced-motion` handling. The menu closes on link selection and outside click. Verify keyboard order, menu relationship/expanded-state announcement, and visible focus in implementation review. Current purple focus indicator has a known contrast failure against the light CTA; see palette section. Solid-pair calculations do not establish contrast over dynamic video. No video contrast has been measured.
+Source provides a main hero, semantic heading and paragraph, video elements marked `aria-hidden="true"`, and a separately labelled section heading and ordered message list (no live region, so the list is not announced as an unsolicited update). The burger button has an `aria-expanded` state; Escape closes its menu and restores focus, while clicking outside closes it. Verify keyboard order and visible focus in implementation review. Current purple focus indicator has a known contrast failure against light actions; see palette section. Solid-pair calculations do not establish contrast over dynamic video. No video contrast has been measured.
 
 ## 12. Exportable CSS tokens and Tailwind equivalent
 
@@ -112,20 +109,19 @@ Values below reproduce evidenced source values; proposed corrective values are c
 ```css
 :root {
   --u: min(calc(100vw / 1280), calc(100dvh / 760));
-  --color-ink: #ffffff;
-  --color-ink-muted: #ededed;
+  --color-ink: #f2f9ff;
   --color-panel: rgba(10, 10, 12, .86);
-  --color-button: #fdfdfd;
-  --color-button-ink: #050505;
-  --color-glass: rgba(0, 0, 0, .78);
-  --color-glass-border: rgba(255, 255, 255, .09);
+  --color-button: #d8f0ff;
+  --color-button-ink: #09223c;
+  --color-glass: rgba(5, 22, 45, .82);
+  --color-glass-border: rgba(140, 208, 255, .32);
   --color-focus-current: #a78bfa;
   --color-page: #000000;
   /* Proposed section layout values, not global tokens. */
   --section-background: #050505;
   --section-message-accent: #a78bfa;
   --dx: 8.5;
-  --dy: 13.1;
+  --dy: -58;
   --e-reveal: cubic-bezier(.16, 1, .3, 1);
   --e-soft: cubic-bezier(.25, .8, .3, 1);
   --radius-cta: calc(19.5 * var(--u));
@@ -157,7 +153,6 @@ export default {
     extend: {
       colors: {
         ink: 'var(--color-ink)',
-        'ink-muted': 'var(--color-ink-muted)',
         panel: 'var(--color-panel)',
         button: 'var(--color-button)',
         'button-ink': 'var(--color-button-ink)',
@@ -194,8 +189,8 @@ The CTA radius token is `calc(19.5 * var(--u))`, so it follows the intentional r
 
 - Brand, audience, and product context: conflicting repository and document evidence; unresolved.
 - H2–H6, body variants beyond the hero paragraph, caption, and code typography: not evidenced.
-- Semantic success/warning/error/info colors and surfaces beyond the evidenced responsive menu panel: not evidenced.
-- CTA and navigation destinations: not evidenced; some navigation controls are disabled placeholders.
+- Semantic success/warning/error/info colors and surfaces beyond the evidenced hero controls: not evidenced.
+- The central “Descubre” destination is not configured; navigation “Quiénes somos” targets the team section and “Postula” targets the application dialog.
 - Form design and behavior: no forms present.
 - Dynamic video contrast: not measured and not certifiable from solid-color calculations; hero currently has no scrim. The black scrim recommendation is proposed, not current.
 - Dual black/white focus treatment is a proposed correction; current purple focus remains a known contrast issue pending implementation.
