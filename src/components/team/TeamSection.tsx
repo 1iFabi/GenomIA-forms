@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import Alex from '../../assets/team/Alex.jpg';
 import Andres from '../../assets/team/Andres.png';
@@ -55,18 +55,26 @@ const TEAM: TeamMember[] = [
   },
 ];
 
+const LOOP_START = TEAM.length;
+const LOOP_MEMBERS = [...TEAM, ...TEAM, ...TEAM];
+const center = (index: number) =>
+  LOOP_START + (index % TEAM.length + TEAM.length) % TEAM.length;
+
 const INTERVAL_MS = 6000;
 
 export default function TeamSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState(LOOP_START);
   const [expanded, setExpanded] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [hovering, setHovering] = useState(false);
   const [inView, setInView] = useState(false);
   const [pageVisible, setPageVisible] = useState(!document.hidden);
   const [reduceMotion, setReduceMotion] = useState(
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   );
+  const active = position % TEAM.length;
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -90,12 +98,21 @@ export default function TeamSection() {
     };
   }, []);
 
+  useLayoutEffect(() => {
+    if (!resetting) return;
+
+    // Compute the centered frame with transitions disabled before restoring movement.
+    trackRef.current?.getBoundingClientRect();
+    const timer = window.setTimeout(() => setResetting(false), 32);
+    return () => window.clearTimeout(timer);
+  }, [resetting]);
+
   const autoPlaying = inView && pageVisible && !reduceMotion && !hovering && !expanded;
 
   useEffect(() => {
     if (!autoPlaying) return;
     const timer = window.setTimeout(() => {
-      setActive((current) => (current + 1) % TEAM.length);
+      setPosition((current) => current + 1);
     }, INTERVAL_MS);
     return () => window.clearTimeout(timer);
   }, [active, autoPlaying]);
@@ -118,7 +135,7 @@ export default function TeamSection() {
       <div
         id="team-stage"
         className="team__stage"
-        style={{ '--active': active } as CSSProperties}
+        style={{ '--position': position } as CSSProperties}
         role="region"
         aria-roledescription="carrusel"
         aria-label="Integrantes del equipo"
@@ -132,9 +149,10 @@ export default function TeamSection() {
           if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
             event.preventDefault();
             setExpanded(false);
-            setActive((current) =>
-              (current + (event.key === 'ArrowLeft' ? -1 : 1) + TEAM.length) % TEAM.length,
-            );
+            setPosition((current) => {
+              const next = current + (event.key === 'ArrowLeft' ? -1 : 1);
+              return reduceMotion || next < 0 || next >= LOOP_MEMBERS.length ? center(next) : next;
+            });
           } else if (
             event.target === event.currentTarget
             && (event.key === 'Enter' || event.key === ' ')
@@ -145,17 +163,31 @@ export default function TeamSection() {
           }
         }}
       >
-        <div className="team__track">
-          {TEAM.map((member, i) => {
-            const isActive = i === active;
+        <div
+          ref={trackRef}
+          className="team__track"
+          data-resetting={resetting}
+          onTransitionEnd={(event) => {
+            if (event.target !== event.currentTarget || event.propertyName !== 'transform') return;
+            if (position < LOOP_START || position >= LOOP_START + TEAM.length) {
+              setResetting(true);
+              setPosition(center(position));
+            }
+          }}
+        >
+          {LOOP_MEMBERS.map((member, slot) => {
+            const i = slot % TEAM.length;
+            const isActive = slot === position;
+            const isDuplicate = slot < LOOP_START || slot >= LOOP_START + TEAM.length;
             const isExpanded = isActive && expanded && Boolean(member.qualifications);
             return (
               <article
-                key={member.name}
+                key={`${member.name}-${slot}`}
                 className="team__card"
                 data-active={isActive}
+                aria-hidden={isDuplicate}
                 data-expanded={isExpanded}
-                style={{ '--d': Math.abs(i - active) } as CSSProperties}
+                style={{ '--d': Math.abs(slot - position) } as CSSProperties}
                 role="group"
                 aria-roledescription="diapositiva"
                 aria-label={`${i + 1} de ${TEAM.length}`}
@@ -167,7 +199,7 @@ export default function TeamSection() {
                     <p className="team__role">{member.role}</p>
                     {member.qualifications && (
                       <div
-                        id={`team-studies-${i}`}
+                        id={`team-studies-${slot}`}
                         className="team__details"
                         aria-hidden={!isExpanded}
                       >
@@ -189,18 +221,18 @@ export default function TeamSection() {
                   <button
                     type="button"
                     className="team__trigger"
-                    tabIndex={isActive ? 0 : -1}
+                    tabIndex={isActive && !isDuplicate ? 0 : -1}
                     aria-label={isActive
                       ? isExpanded ? `Ocultar estudios de ${member.name}` : `Ver estudios de ${member.name}`
                       : member.qualifications ? `Ver estudios de ${member.name}` : `Mostrar a ${member.name}`}
                     aria-expanded={isActive && member.qualifications ? isExpanded : undefined}
-                    aria-controls={isActive && member.qualifications ? `team-studies-${i}` : undefined}
+                    aria-controls={isActive && member.qualifications ? `team-studies-${slot}` : undefined}
                     onClick={() => {
                       if (isActive) {
                         setExpanded((open) => !open);
                       } else {
                         setExpanded(Boolean(member.qualifications));
-                        setActive(i);
+                        setPosition(reduceMotion ? center(slot) : slot);
                       }
                     }}
                   />

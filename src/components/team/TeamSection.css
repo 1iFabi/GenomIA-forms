@@ -70,8 +70,12 @@
   gap: var(--gap);
   width: max-content;
   margin-left: 50%;
-  transform: translateX(calc(-1 * (var(--active) * (var(--w) + var(--gap)) + var(--w) / 2)));
+  transform: translateX(calc(-1 * (var(--position) * (var(--w) + var(--gap)) + var(--w) / 2)));
   transition: transform .9s cubic-bezier(.22, .7, .2, 1);
+}
+
+.team__track[data-resetting="true"] {
+  transition: none;
 }
 
 /* Tarjeta */
